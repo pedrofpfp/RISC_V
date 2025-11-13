@@ -1,0 +1,44 @@
+# depslib dependency file v1.0
+1763039090 source:c:\users\pedro\desktop\riscv_1\main.cpp
+	<iostream>
+	<fstream>
+	<sstream>
+	<iomanip>
+	<string>
+	<filesystem>
+	"cpu.h"
+	"bus.h"
+	"ram.h"
+
+1763037648 c:\users\pedro\desktop\riscv_1\cpu.h
+	<vector>
+	<cstdint>
+	<iostream>
+	<iomanip>
+	"bus.h"
+
+1763039508 source:c:\users\pedro\desktop\riscv_1\cpu.cpp
+	"cpu.h"
+	<iostream>
+	<iomanip>
+	<string>
+
+1763038527 source:c:\users\pedro\desktop\riscv_1\ram.cpp
+	"ram.h"
+	<iostream>
+	<iomanip>
+
+1763039777 c:\users\pedro\desktop\riscv_1\ram.h
+	<vector>
+	<cstdint>
+	<iostream>
+
+1763040064 source:c:\users\pedro\desktop\riscv_1\bus.cpp
+	"bus.h"
+	<iostream>
+	<iomanip>
+
+1763039712 c:\users\pedro\desktop\riscv_1\bus.h
+	<cstdint>
+	"ram.h"
+
