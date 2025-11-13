@@ -95,7 +95,7 @@ bool run_single_test(const fs::path& hex_file_path) {
 // ============================================================
 int main() {
     // ⬅️ Define o caminho para a pasta de testes
-    const std::string path_str = "C:\\Users\\pedro\\Desktop\\TESTES HEX RISCV";
+    const std::string path_str = "..\\TESTES HEX RISCV";
     fs::path test_directory(path_str);
 
     int pass_count = 0;

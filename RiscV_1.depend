@@ -42,3 +42,35 @@
 	<cstdint>
 	"ram.h"
 
+1763040868 source:c:\users\pedro\desktop\risc_v\bus.cpp
+	"bus.h"
+	<iostream>
+	<iomanip>
+
+1763040868 c:\users\pedro\desktop\risc_v\bus.h
+	<cstdint>
+	"ram.h"
+
+1763040868 c:\users\pedro\desktop\risc_v\ram.h
+	<vector>
+	<cstdint>
+	<iostream>
+
+1763040868 source:c:\users\pedro\desktop\risc_v\cpu.cpp
+	"cpu.h"
+	<iostream>
+	<iomanip>
+	<string>
+
+1763040868 c:\users\pedro\desktop\risc_v\cpu.h
+	<vector>
+	<cstdint>
+	<iostream>
+	<iomanip>
+	"bus.h"
+
+1763040868 source:c:\users\pedro\desktop\risc_v\ram.cpp
+	"ram.h"
+	<iostream>
+	<iomanip>
+
