@@ -74,3 +74,14 @@
 	<iostream>
 	<iomanip>
 
+1763040984 source:c:\users\pedro\desktop\risc_v\main.cpp
+	<iostream>
+	<fstream>
+	<sstream>
+	<iomanip>
+	<string>
+	<filesystem>
+	"cpu.h"
+	"bus.h"
+	"ram.h"
+
