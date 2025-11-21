@@ -7,7 +7,7 @@
 // ============================================================
 MainRAM::MainRAM() {
     memory.resize(MAIN_RAM_SIZE, 0);
-    std::cout << "[RAM] Módulo MainRAM (" << (MAIN_RAM_SIZE / 1024)
+    std::cout << "[RAM] MÃ³dulo MainRAM (" << (MAIN_RAM_SIZE / 1024)
               << " KB) criado.\n";
 }
 
@@ -28,29 +28,23 @@ void MainRAM::writeByte(uint32_t local_addr, uint8_t data) {
 }
 
 // ============================================================
-//  VRAM
-// ============================================================
-//
-// --- CORREÇÃO ---
-// Todas as implementações de VRAM foram removidas daqui.
-// O arquivo ram.h já define VRAM() e dumpHexToTerminal()
-// como funções "inline" vazias, que é o correto, pois a VRAM
-// não é usada neste projeto.
-//
+//  VRAM (NÃ£o usada)
 // ============================================================
 
 
 // ============================================================
-//  PERIFÉRICOS
+//  PERIFÃ‰RICOS
 // ============================================================
 Peripherals::Peripherals()
     : simulation_should_halt(false),
       test_result(0),
       tohost_word(0)
 {
-    std::cout << "[E/S] Módulo de Periféricos (1 KB) criado.\n";
+    std::cout << "[E/S] MÃ³dulo de PerifÃ©ricos (1 KB) criado.\n";
 }
 
+// --- Leitura de Byte ---
+// (LÃª o byte correspondente da palavra 'tohost' interna - Little-Endian)
 uint8_t Peripherals::readByte(uint32_t local_addr) {
     if (local_addr >= LOCAL_TOHOST_ADDR && local_addr <= LOCAL_TOHOST_ADDR + 3) {
         uint32_t byte_offset = local_addr - LOCAL_TOHOST_ADDR;
@@ -60,14 +54,37 @@ uint8_t Peripherals::readByte(uint32_t local_addr) {
     return 0;
 }
 
+// --- Escrita de Byte ---
+// (Monta a palavra 'tohost' interna - Little-Endian)
 void Peripherals::writeByte(uint32_t local_addr, uint8_t data) {
     if (local_addr >= LOCAL_TOHOST_ADDR && local_addr <= LOCAL_TOHOST_ADDR + 3) {
 
         uint32_t byte_offset = local_addr - LOCAL_TOHOST_ADDR;
         uint32_t shift = byte_offset * 8;
 
+        // Limpa o byte antigo e insere o novo byte na posiÃ§Ã£o correta
         tohost_word = (tohost_word & ~(0xFF << shift)) | (static_cast<uint32_t>(data) << shift);
 
+        // A simulaÃ§Ã£o NÃƒO para em uma escrita de byte.
+    }
+}
+
+// --- Leitura de Palavra ---
+uint32_t Peripherals::readWord(uint32_t local_addr) {
+    // Acesso rÃ¡pido Ã  palavra tohost
+    if (local_addr == LOCAL_TOHOST_ADDR) {
+        return tohost_word;
+    }
+    return 0;
+}
+
+// --- Escrita de Palavra ---
+void Peripherals::writeWord(uint32_t local_addr, uint32_t data) {
+    // SÃ³ reage se for uma escrita no endereÃ§o base do 'tohost'
+    if (local_addr == LOCAL_TOHOST_ADDR) {
+        tohost_word = data; // Armazena a palavra inteira
+
+        // A LÃ“GICA DE PARADA (HALT) ocorre aqui (escrita de palavra).
         simulation_should_halt = true;
         test_result = tohost_word;
     }

@@ -2,6 +2,7 @@
 #define BUS_H
 
 #include <cstdint>
+#include <iostream>
 #include "ram.h" // Contém MainRAM, VRAM e Peripherals
 
 /**
@@ -13,21 +14,20 @@ class Bus {
 public:
     Bus(MainRAM* ram, VRAM* vram, Peripherals* peripherals);
 
-    uint8_t  readByte(uint32_t addr);
-    void     writeByte(uint32_t addr, uint8_t data);
-    uint32_t readWord(uint32_t addr);
-    void     writeWord(uint32_t addr, uint32_t data);
+    uint8_t   readByte(uint32_t addr);
+    void      writeByte(uint32_t addr, uint8_t data);
+    uint32_t  readWord(uint32_t addr);
+    void      writeWord(uint32_t addr, uint32_t data);
 
     // ====================================================================
-    //  CORREÇÃO: Movido para 'public' para que a CPU::run() possa
-    //  acessar bus.peripherals->simulation_should_halt
+    //  Permite que a CPU acesse o módulo de Periféricos para checar 'tohost'
     // ====================================================================
     Peripherals* peripherals;
 
 private:
     MainRAM* ram;
     VRAM* vram;
-    // Peripherals* peripherals; // Movido para public
+    // Peripherals* peripherals; // Mantido em 'public'
 };
 
 #endif // BUS_H

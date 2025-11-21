@@ -5,17 +5,17 @@
 #include <cstdint>
 #include <iostream>
 
-// --- DefiniÁıes do Mapa de MemÛria (ATUALIZADO PARA TESTES DE COMPLIANCE) ---
+// --- Defini√ß√µes do Mapa de Mem√≥ria (ATUALIZADO PARA TESTES DE COMPLIANCE) ---
 const uint32_t MAIN_RAM_START = 0x80000000;
 const uint32_t MAIN_RAM_SIZE  = 0x80000;    // 512 KB
 const uint32_t MAIN_RAM_END   = MAIN_RAM_START + MAIN_RAM_SIZE - 1;
 
-// N„o precisamos de VRAM para este teste
+// N√£o precisamos de VRAM para este teste
 const uint32_t VRAM_START = 0x00000; // Irrelevante
 const uint32_t VRAM_SIZE  = 0x0;
 const uint32_t VRAM_END   = 0x0;
 
-// PerifÈricos (tohost) agora em 0x80001000, como o teste espera
+// Perif√©ricos (tohost) agora em 0x80001000, como o teste espera
 const uint32_t PERIPHERALS_START = 0x80001000;
 const uint32_t PERIPHERALS_SIZE  = 0x1000;     // 4KB
 const uint32_t PERIPHERALS_END   = PERIPHERALS_START + PERIPHERALS_SIZE - 1;
@@ -53,9 +53,13 @@ public:
     bool simulation_should_halt;
     uint32_t test_result;
 
-    Peripherals();
+Peripherals();
     uint8_t readByte(uint32_t local_addr);
     void writeByte(uint32_t local_addr, uint8_t data);
+
+    // ‚¨áÔ∏è ADICIONE ESTAS DUAS LINHAS ‚¨áÔ∏è
+    uint32_t readWord(uint32_t local_addr);
+    void writeWord(uint32_t local_addr, uint32_t data);
 
 private:
     uint32_t tohost_word;

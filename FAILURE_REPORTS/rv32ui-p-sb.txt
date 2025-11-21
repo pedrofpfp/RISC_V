@@ -1,0 +1,54 @@
+================================================
+          RELATÓRIO DE FALHA RISC-V
+================================================
+Teste: rv32ui-p-sb.hex
+Ciclos Executados: 122 (Max: 500000)
+Resultado: FALHA (tohost = 0x9)
+
+--- DIAGNÓSTICO ---
+Causa: O teste executou uma instrução ECALL (Trap 0xB) para reportar uma FALHA.
+  O erro ocorreu ANTES do PC 0x80000618 (PC salvo).
+  FALHA PROVÁVEL: Falha na instrução LOAD/STORE/Cálculo que precede o trap.
+---------------------------------
+
+--- ESTADO FINAL DA CPU ---
+PC: 0x80000044
+x0 (zero):	0x00000000 (0)
+x1 (ra):	0xffffefa0 (-4192)
+x2 (sp):	0x80002000 (-2147475456)
+x3 (gp):	0x00000009 (9)
+x4 (tp):	0x00000000 (0)
+x5 (t0):	0x8000018c (-2147483252)
+x6 (t1):	0x00000000 (0)
+x7 (t2):	0xffffefa0 (-4192)
+x8 (fp/s0):	0x00000000 (0)
+x9 (s1):	0x00000000 (0)
+x10 (a0):	0x00000009 (9)
+x11 (a1):	0x00000000 (0)
+x12 (a2):	0x00000000 (0)
+x13 (a3):	0x00000000 (0)
+x14 (a4):	0x000000a0 (160)
+x15 (a5):	0x80000214 (-2147483116)
+x16 (a6):	0x00000000 (0)
+x17 (a7):	0x0000005d (93)
+x18 (s2):	0x00000000 (0)
+x19 (s3):	0x00000000 (0)
+x20 (s4):	0x00000000 (0)
+x21 (s5):	0x00000000 (0)
+x22 (s6):	0x00000000 (0)
+x23 (s7):	0x00000000 (0)
+x24 (s8):	0x00000000 (0)
+x25 (s9):	0x00000000 (0)
+x26 (s10):	0x00000000 (0)
+x27 (s11):	0x00000000 (0)
+x28 (t3):	0x00000000 (0)
+x29 (t4):	0x00000000 (0)
+x30 (t5):	0x8000103c (-2147479492)
+x31 (t6):	0x0000000b (11)
+
+--- CSRs (Control and Status Registers) ---
+mstatus: 0x0
+mepc:    0x80000618
+mcause:  0xb
+mtvec:   0x80000004
+mie:     0x0

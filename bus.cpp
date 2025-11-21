@@ -9,78 +9,121 @@ Bus::Bus(MainRAM* ram, VRAM* vram, Peripherals* peripherals)
 }
 
 // ============================================================
-//  LER UM BYTE DO ENDERE«O GLOBAL
+//  LER UM BYTE DO ENDERE√áO GLOBAL
 // ============================================================
 uint8_t Bus::readByte(uint32_t addr) {
-
-    // --- L”GICA DE ROTEAMENTO CRÕTICA ---
-    // PerifÈricos (o intervalo mais especÌfico) devem ser checados PRIMEIRO.
+    // Perif√©ricos
     if (addr >= PERIPHERALS_START && addr <= PERIPHERALS_END) {
         uint32_t local = addr - PERIPHERALS_START;
         return peripherals->readByte(local);
     }
-    // RAM Principal (o intervalo maior) È checado DEPOIS.
+    // RAM Principal
     else if (addr >= MAIN_RAM_START && addr <= MAIN_RAM_END) {
         uint32_t local = addr - MAIN_RAM_START;
         return ram->readByte(local);
     }
-    // VRAM (n„o usada)
+    // VRAM
     else if (addr >= VRAM_START && addr <= VRAM_END) {
-        return 0; // VRAM È um stub
+        return 0; // VRAM √© um stub de leitura
     }
+    // Endere√ßo Inv√°lido
     else {
-        std::cerr << "[Bus] ERRO: Leitura de endereÁo inv·lido 0x"
+        std::cerr << "[Bus] ERRO: Leitura de Byte em endere√ßo inv√°lido 0x"
                   << std::hex << addr << std::dec << std::endl;
         return 0;
     }
 }
 
 // ============================================================
-//  ESCREVER UM BYTE NO ENDERE«O GLOBAL
+//  ESCREVER UM BYTE NO ENDERE√áO GLOBAL
 // ============================================================
 void Bus::writeByte(uint32_t addr, uint8_t data) {
-
-    // --- L”GICA DE ROTEAMENTO CRÕTICA ---
-    // PerifÈricos (o intervalo mais especÌfico) devem ser checados PRIMEIRO.
+    // Perif√©ricos
     if (addr >= PERIPHERALS_START && addr <= PERIPHERALS_END) {
         uint32_t local = addr - PERIPHERALS_START;
         peripherals->writeByte(local, data);
     }
-    // RAM Principal (o intervalo maior) È checado DEPOIS.
+    // RAM Principal
     else if (addr >= MAIN_RAM_START && addr <= MAIN_RAM_END) {
         uint32_t local = addr - MAIN_RAM_START;
         ram->writeByte(local, data);
     }
-    // VRAM (n„o usada)
+    // VRAM
     else if (addr >= VRAM_START && addr <= VRAM_END) {
-        // VRAM È um stub, n„o faz nada
+        // VRAM √© um stub de escrita
     }
+    // Endere√ßo Inv√°lido
     else {
-        std::cerr << "[Bus] ERRO: Escrita em endereÁo inv·lido 0x"
+        std::cerr << "[Bus] ERRO: Escrita de Byte em endere√ßo inv√°lido 0x"
                   << std::hex << addr << std::dec << std::endl;
     }
 }
 
 // ============================================================
-//  LEITURA DE PALAVRA (32 bits) EM LITTLE-ENDIAN
+//  LEITURA DE PALAVRA (32 bits) EM LITTLE-ENDIAN (Corrigida)
 // ============================================================
 uint32_t Bus::readWord(uint32_t addr) {
-    // Esta lÛgica est· correta, pois chama readByte() 4x
-    uint32_t value = 0;
-    value |= readByte(addr);
-    value |= readByte(addr + 1) << 8;
-    value |= readByte(addr + 2) << 16;
-    value |= readByte(addr + 3) << 24;
-    return value;
+
+    // Perif√©ricos (Acesso r√°pido)
+    if (addr >= PERIPHERALS_START && addr <= PERIPHERALS_END) {
+        uint32_t local = addr - PERIPHERALS_START;
+        return peripherals->readWord(local);
+    }
+    // RAM Principal (Montagem byte-a-byte, chamando readByte para roteamento)
+    else if (addr >= MAIN_RAM_START && addr <= MAIN_RAM_END) {
+
+        // üõë CR√çTICO: Verifica se o acesso de 4 bytes excede o final da RAM
+        if (addr + 3 > MAIN_RAM_END) {
+            std::cerr << "[Bus] ERRO DE LIMITE: Leitura de palavra 0x" << std::hex << addr
+                      << " excede o fim da RAM (Max: 0x" << MAIN_RAM_END << ")!\n";
+            return 0; // Retorna 0 (simulando falha de leitura ou trap)
+        }
+
+        // Little-Endian: LSB em addr
+        uint32_t value = 0;
+        value |= readByte(addr);
+        value |= (uint32_t)readByte(addr + 1) << 8;
+        value |= (uint32_t)readByte(addr + 2) << 16;
+        value |= (uint32_t)readByte(addr + 3) << 24; // MSB
+        return value;
+    }
+    // VRAM e Endere√ßos Inv√°lidos (Retorna 0 ou reporta erro)
+    else {
+        std::cerr << "[Bus] ERRO: Leitura de Palavra em endere√ßo inv√°lido 0x"
+                  << std::hex << addr << std::dec << std::endl;
+        return 0;
+    }
 }
 
 // ============================================================
-//  ESCRITA DE PALAVRA (32 bits) EM LITTLE-ENDIAN
+//  ESCRITA DE PALAVRA (32 bits) EM LITTLE-ENDIAN (Corrigida)
 // ============================================================
 void Bus::writeWord(uint32_t addr, uint32_t data) {
-    // Esta lÛgica est· correta, pois chama writeByte() 4x
-    writeByte(addr, data & 0xFF);
-    writeByte(addr + 1, (data >> 8) & 0xFF);
-    writeByte(addr + 2, (data >> 16) & 0xFF);
-    writeByte(addr + 3, (data >> 24) & 0xFF);
+
+    // Perif√©ricos (Acesso r√°pido)
+    if (addr >= PERIPHERALS_START && addr <= PERIPHERALS_END) {
+        uint32_t local = addr - PERIPHERALS_START;
+        peripherals->writeWord(local, data);
+    }
+    // RAM Principal (Desmontagem byte-a-byte, chamando writeByte para roteamento)
+    else if (addr >= MAIN_RAM_START && addr <= MAIN_RAM_END) {
+
+        // üõë CR√çTICO: Verifica se o acesso de 4 bytes excede o final da RAM
+        if (addr + 3 > MAIN_RAM_END) {
+            std::cerr << "[Bus] ERRO DE LIMITE: Escrita de palavra 0x" << std::hex << addr
+                      << " excede o fim da RAM (Max: 0x" << MAIN_RAM_END << ")!\n";
+            return;
+        }
+
+        // Little-Endian: LSB em addr
+        writeByte(addr, data & 0xFF);
+        writeByte(addr + 1, (data >> 8) & 0xFF);
+        writeByte(addr + 2, (data >> 16) & 0xFF);
+        writeByte(addr + 3, (data >> 24) & 0xFF); // MSB
+    }
+    // VRAM e Endere√ßos Inv√°lidos (reporta erro)
+    else {
+        std::cerr << "[Bus] ERRO: Escrita de Palavra em endere√ßo inv√°lido 0x"
+                  << std::hex << addr << std::dec << std::endl;
+    }
 }
