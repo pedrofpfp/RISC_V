@@ -1,6 +1,4 @@
----
-title: "Relatório de Arquitetura: Emulador RISC-V Completo "
----
+# Relatório de Arquitetura: Emulador RISC-V Completo
 
 # O Fluxo de Execução (O Papel do `main.cpp`)
 
